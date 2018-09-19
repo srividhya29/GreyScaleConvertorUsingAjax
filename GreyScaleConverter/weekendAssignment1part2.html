@@ -1,0 +1,24 @@
+﻿<!DOCTYPE html>
+
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8" />
+    <title></title>
+    <script>
+        window.onload = function () {
+            var x = localStorage.getItem('x');
+            var y = localStorage.getItem('y');
+            var z = localStorage.getItem('z');
+                document.getElementById("dataURL").innerHTML = "<b>dataURL1:</b> " + x + "<b>dataURL2:</b> " + y + "<b>dataURL1:</b> " + z;
+        };
+    </script>
+</head>
+<body>
+    
+        
+        <p id="dataURL" style="width:600px;word-wrap: break-word" ;></p>
+        
+   
+
+</body>
+</html>

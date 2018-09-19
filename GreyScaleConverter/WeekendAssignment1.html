@@ -1,0 +1,97 @@
+﻿<!DOCTYPE html>
+
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8" />
+    <title></title>
+    <script>
+        function loadCanvas(dataURL) { // dataURL is called as arguments or dependencies
+            var canvas = document.getElementById("myCanvas");
+            var context = canvas.getContext("2d");
+
+            var storage = window.localStorage;
+            localStorage.setItem('x', dataURL[0]);
+            localStorage.setItem('y', dataURL[1]);
+            localStorage.setItem('z', dataURL[2]);
+           
+            var imageObj1 = new Image();
+            imageObj1.onload = function () { // this call back is called on the image instance
+                context.drawImage(this, 50, 20); // this is the image then x and y parameters
+            };
+            imageObj1.src = dataURL[0];
+
+            var imageObj1 = new Image();
+            imageObj1.onload = function () { // this call back is called on the image instance
+                context.drawImage(this, 200,20); // this is the image then x and y parameters
+            };
+            imageObj1.src = dataURL[1];
+
+            var imageObj1 = new Image();
+            imageObj1.onload = function () { // this call back is called on the image instance
+                context.drawImage(this, 350, 20); // this is the image then x and y parameters
+            };
+            imageObj1.src = dataURL[2];
+
+        }
+        window.onload = function () {
+            //request is an ajax instance
+            var request = new XMLHttpRequest(); // ref to ajax element in js
+            request.open("GET", "url.txt", true);
+            request.onreadystatechange = function () { // string or error
+                if (request.readyState == 4) {// string
+                    console.log("entered");
+                  
+                    
+                    var result = request.responseText.split(" ");
+                    
+
+                    //console.log(result[0] + " hi : " + result[1]);
+                    loadCanvas(result);
+                   
+                }
+                else {
+                    console.log("failed readystate 4");
+                }
+            };
+            request.send(null)
+        };
+        var w;
+
+        function startWorker() {
+            var canvas = document.getElementById("myCanvas");
+            var context = canvas.getContext("2d");
+            var imageData = context.getImageData(0, 0, canvas.width, canvas.height)
+            if (typeof (Worker) !== "undefined") {
+                if (typeof (w) == "undefined") {
+                    w = new Worker("greyScale_workers.js");
+                    w.postMessage({
+                        image: imageData
+                    });
+                    w.onmessage = function (e) {
+                        img_pixels = e.data.image;
+                        console.log('message received from worker')
+                        context.putImageData(img_pixels, 0, 0);
+                        imageObj = new Image();
+                        imagData = context.getImageData(0, 0, canvas.width, canvas.height);
+                        imageObj.onload = function () {
+                            context.drawImage(this, 100, 100);
+                        };
+                        console.log(imagData);
+                        image5.src = imagData.toDataURL();
+                    }
+
+                }
+            }
+        }
+    </script>
+</head>
+<body>
+    <canvas id="myCanvas" width="1000" height="250" style="border:1px solid black;"></canvas>
+    <button onclick="startWorker()">Start Worker</button>
+    <p><strong>Note:</strong> Internet Explorer 9 and earlier versions do not support Web Workers.</p>
+    <canvas id="myCanvas1" width="400" height="250" style="border:1px solid black;"></canvas>
+
+
+
+</body>
+</html>
